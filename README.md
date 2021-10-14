@@ -9,6 +9,7 @@
 
 ## Background
 Whole term team project of STAT 471 - Probability I.
+
 Voter model based on the property of Martingale Problem and Markov Process.
 
 ## Dependency
