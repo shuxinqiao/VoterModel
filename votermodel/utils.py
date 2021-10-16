@@ -68,7 +68,7 @@ def create_node_value_vector(n, gen_type="uniform"):
         raise ValueError("argument n is neither positive nor integer")
 
     # generate n size numpy array with all 0
-    node_value_list = np.zeros(n, dtype=int)
+    node_value_vector = np.zeros(n, dtype=int)
 
     # uniform distributed 0/1 to all n nodes
     if gen_type == "uniform":
@@ -78,22 +78,47 @@ def create_node_value_vector(n, gen_type="uniform"):
         
         # change the selected nodes' value
         for i in selection_list:
-            node_value_list[i] = 1
+            node_value_vector[i] = 1
         
-        return node_value_list
+        return node_value_vector
 
 
 def create_binary_matrix(n, gen_type="uniform"):
 
     """
-    create a numpy symmetric matrix of binary value of nodes' relationship
+    create a numpy symmetric matrix of binary value of nodes' relationship \n
+    by reshaping the node_value array (depends on function: create_node_value_vector())
 
-    :param n: n^2 is the size of matrix, positive integer \n
+    :param n: n**2 is the size of matrix, positive integer \n
     :param gen_type: (default = "uniform") the way of assigning binary values
 
     :return: numpy.matrix() object
     """
-    # not sure
 
-    return 0
+    node_array = create_node_value_vector(n**2, gen_type)
+    reshaped_node_matrix = node_array.reshape(n, n)
 
+    # node_matrix may have 1 in its diagonals so fill them with zero
+    np.fill_diagonal(reshaped_node_matrix, 0)
+
+    # complete the graph with right relationships
+    node_matrix = np.bitwise_or(reshaped_node_matrix,reshaped_node_matrix.transpose())
+
+    return node_matrix
+
+
+def mean_influence(node_matrix, node_vector):
+    """
+    calculate mean influence each node received from its relationships.
+
+    :param node_matrix: n by n shape numpy matrix \n
+    :param node_vector: n by 1 shape numpy array
+
+    :return: n by 1 numpy array
+    """
+
+    vector_n = node_vector.shape[0]
+
+    mean_influence_vector = node_matrix.dot(node_vector) / vector_n
+
+    return mean_influence_vector
