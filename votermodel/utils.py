@@ -107,7 +107,7 @@ def create_binary_matrix(n, gen_type="uniform"):
     return node_matrix
 
 
-def mean_influence(node_matrix, node_vector):
+def transition_rate(node_matrix, node_vector):
     """
     calculate mean influence each node received from its relationships.
 
@@ -117,8 +117,34 @@ def mean_influence(node_matrix, node_vector):
     :return: n by 1 numpy array
     """
 
-    vector_n = node_vector.shape[0]
+    vector_n = node_vector.shape[0] - 1
 
     mean_influence_vector = node_matrix.dot(node_vector) / vector_n
 
     return mean_influence_vector
+
+
+def change_node_value(node_vector, forward_transition_vector, backward_transition_vector):
+    """
+    random choose to flip 1 to 0 or 0 to 1, depends on transition rate
+
+    :param node_vector: n by 1 numpay array \n
+    :param transition_vector: n by 1 numpy array \n
+
+    :return: n by 1 numpy array
+    """
+
+        
+    for i in range(node_vector.shape[0]):
+        if node_vector[i] == 0:
+            node_vector[i] = np.random.binomial(1,forward_transition_vector[i])
+
+        elif node_vector[i] == 1:
+            node_vector[i] = 1 - np.random.binomial(1,forward_transition_vector[i])
+
+    return node_vector
+
+
+def pop_rate():
+
+    return 
