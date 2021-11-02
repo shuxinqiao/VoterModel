@@ -1,3 +1,4 @@
+from matplotlib.pyplot import axis
 import numpy as np
 from string import ascii_uppercase
 from itertools import product
@@ -68,19 +69,9 @@ def create_node_value_vector(n, gen_type="uniform"):
         raise ValueError("argument n is neither positive nor integer")
 
     # generate n size numpy array with all 0
-    node_value_vector = np.zeros(n, dtype=int)
-
-    # uniform distributed 0/1 to all n nodes
-    if gen_type == "uniform":
-
-        # random.randint uses discrete uniform distribution
-        selection_list = np.random.randint(0,n,n//2)
+    node_value_vector = np.random.randint(2,size=n)
         
-        # change the selected nodes' value
-        for i in selection_list:
-            node_value_vector[i] = 1
-        
-        return node_value_vector
+    return node_value_vector
 
 
 def create_binary_matrix(n, gen_type="uniform"):
@@ -98,8 +89,8 @@ def create_binary_matrix(n, gen_type="uniform"):
     node_array = create_node_value_vector(n**2, gen_type)
     reshaped_node_matrix = node_array.reshape(n, n)
 
-    # node_matrix may have 1 in its diagonals so fill them with zero
-    np.fill_diagonal(reshaped_node_matrix, 0)
+    # node_matrix may have 1 in its diagonals so fill them with ones
+    np.fill_diagonal(reshaped_node_matrix, 1)
 
     # complete the graph with right relationships
     node_matrix = np.bitwise_or(reshaped_node_matrix,reshaped_node_matrix.transpose())
@@ -117,9 +108,18 @@ def transition_rate(node_matrix, node_vector):
     :return: n by 1 numpy array
     """
 
-    vector_n = node_vector.shape[0] - 1
+    vector_n = node_vector.shape[0]
 
-    mean_influence_vector = node_matrix.dot(node_vector) / vector_n
+    mean_influence_vector = node_matrix.dot(node_vector)
+    node_divide = node_matrix.sum(axis=1)
+
+    mean_influence_vector = mean_influence_vector.astype(np.float)
+
+    for i in range(vector_n):
+        a = mean_influence_vector[i].astype(float)*1
+        b =  node_divide[i]
+        c = a / b
+        mean_influence_vector[i] = c
 
     return mean_influence_vector
 
@@ -140,7 +140,7 @@ def change_node_value(node_vector, forward_transition_vector, backward_transitio
             node_vector[i] = np.random.binomial(1,forward_transition_vector[i])
 
         elif node_vector[i] == 1:
-            node_vector[i] = 1 - np.random.binomial(1,forward_transition_vector[i])
+            node_vector[i] = 1 - np.random.binomial(1,backward_transition_vector[i])
 
     return node_vector
 

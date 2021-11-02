@@ -9,26 +9,26 @@ import matplotlib.pyplot as plt
 
 def main():
 
-    n = 15
+    n = 3000
     pop_rate = []
-    run_times = [0]
+    run_times = [0,]
 
-    node_vector_num = create_node_name_vector(n, "number")
+    #node_vector_num = create_node_name_vector(n, "number")
     #print(node_vector_num)
 
-    node_vector_char = create_node_name_vector(n, "char")
+    #node_vector_char = create_node_name_vector(n, "char")
     #print(node_vector_char)
 
     node_value_vector = create_node_value_vector(n)
     print(node_value_vector)
-
+    print('AYaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
     node_binary_matrix = create_binary_matrix(n)
     print(node_binary_matrix)
 
     pop_rate.append(np.mean(node_value_vector))
+    print('whuooooooooooooooooo')
 
-
-    for i in range(50):
+    for i in range(500):
         print("-----run ",i," -----------------------")
         transition_rate_vector = transition_rate(node_binary_matrix, node_value_vector)
         #print(transition_rate_vector)
@@ -44,16 +44,19 @@ def main():
 
         pop_rate.append(np.mean(node_value_vector))
         run_times.append(i+1)
+        
+
         #plt.plot(i, pop_rate[i])
+        plt.plot(run_times,pop_rate)
         #plt.pause(0.05)
 
         #plt.gca().lines[0].set_xdata(run_times[i])
         #plt.gca().lines[0].set_ydata(pop_rate[i])
         #plt.gca().relim()
         #plt.gca().autoscale_view()
-        #plt.pause(0.05);
+        plt.pause(0.05)
 
-    #plt.show()
+    plt.show()
 
 
     #new_node_value_vector = change_node_value()
