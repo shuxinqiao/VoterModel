@@ -1,41 +1,53 @@
-from tkinter import *
+import sys, os
+
+# add path to parent directory
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
+
+from utils import *
+import matplotlib.pyplot as plt
+import tkinter as tk
 from tkinter import ttk
 
 
-def calculate(*args):
-    try:
-        value = float(feet.get())
-        meters.set(int(0.3048 * value * 10000.0 + 0.5)/10000.0)
-    except ValueError:
-        pass
+# initialization
+root = tk.Tk()
+root.title("Voter Model Simulator")
 
+# window size
+window_width = 800
+window_height = 600
+root.minsize(window_width, window_height)
 
-root = Tk()
-root.title("GUI test")
+# icon
+program_directory = sys.path[0]
+root.iconphoto(True, tk.PhotoImage(file=os.path.join(program_directory, "icon.PNG")))
 
-mainframe = ttk.Frame(root, padding="3 3 12 12")
-mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
+# open position
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+
+center_x = int((screen_width - window_width)/2)
+center_y = int((screen_height - window_height)/2)
+
+root.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+
+# grid config
 root.columnconfigure(0, weight=1)
-root.rowconfigure(0, weight=1)
+root.columnconfigure(1, weight=3)
 
-feet = StringVar()
-feet_entry = ttk.Entry(mainframe, width=7, textvariable=feet)
-feet_entry.grid(column=2, row=1, sticky=(W, E))
+# parameter frame
+param = ttk.Frame(root)
+param.pack(side = tk.TOP)
 
-meters = StringVar()
-ttk.Label(mainframe, textvariable=meters).grid(column=2,row=2,sticky=(W, E))
+# parameters
+size_n = tk.IntVar()
 
-ttk.Button(mainframe, text="Calculate", command=calculate).grid(column=3, row=3, sticky=(W))
+size_label = ttk.Label(param, text="Size of population (int):")
+size_label.grid(column=0, row=0, sticky=tk.W)
 
-ttk.Label(mainframe, text="feet").grid(column=3, row=1, sticky=W)
-ttk.Label(mainframe, text="is equivalent to").grid(column=1, row=2, sticky=E)
-ttk.Label(mainframe, text="meters").grid(column=3, row=2, sticky=W)
-
-for child in mainframe.winfo_children(): 
-    child.grid_configure(padx=5, pady=5)
-feet_entry.focus()
-root.bind("<Return>", calculate)
-
+size_entry = ttk.Entry(param, textvariable=size_n)
+size_entry.grid(column=1, row=0, sticky=tk.E)
+size_entry.focus()
 
 
 root.mainloop()

@@ -53,7 +53,6 @@ def create_node_name_vector(n, rep_type):
 
 
 def create_node_value_vector(n, gen_type="uniform"):
-    
     """
     create a numpy array of binary values of nodes \n
     0 for not believe, 1 for believe
@@ -74,8 +73,7 @@ def create_node_value_vector(n, gen_type="uniform"):
     return node_value_vector
 
 
-def create_binary_matrix(n, gen_type="uniform"):
-
+def create_binary_matrix(n, gen_type="uniform", bin_p=False):
     """
     create a numpy symmetric matrix of binary value of nodes' relationship \n
     by reshaping the node_value array (depends on function: create_node_value_vector())
@@ -85,17 +83,43 @@ def create_binary_matrix(n, gen_type="uniform"):
 
     :return: numpy.matrix() object
     """
+    
+    # size parameter check
+    if (n < 0) or not (isinstance(n, int)):
+        raise ValueError("argument n is neither positive nor integer")
 
-    node_array = create_node_value_vector(n**2, gen_type)
-    reshaped_node_matrix = node_array.reshape(n, n)
+    # unifrom generation method
+    if gen_type == "uniform":
+        node_array = create_node_value_vector(n**2, gen_type)
+        reshaped_node_matrix = node_array.reshape(n, n)
 
-    # node_matrix may have 1 in its diagonals so fill them with ones
-    np.fill_diagonal(reshaped_node_matrix, 1)
+        # node_matrix may have 1 in its diagonals so fill them with ones
+        np.fill_diagonal(reshaped_node_matrix, 1)
 
-    # complete the graph with right relationships
-    node_matrix = np.bitwise_or(reshaped_node_matrix,reshaped_node_matrix.transpose())
+        # complete the graph with right relationships
+        node_matrix = np.bitwise_or(reshaped_node_matrix,reshaped_node_matrix.transpose())
 
-    return node_matrix
+        return node_matrix
+
+
+    # binomial generation method given each row with binomial
+    elif gen_type == "binomial":
+
+        if not bin_p:
+            raise ValueError("binomial probility not given")
+        
+        else:
+            for i in range(n):
+                # create row of node matrix, E[1(all j in row)] = n * bin_p
+                node_matrix = np.random.binomial(1,bin_p,(n,n))
+            
+            np.fill_diagonal(node_matrix, 1)
+
+            return node_matrix
+    
+    else:
+        raise ValueError("gen_type wrong")
+
 
 
 def transition_rate(node_matrix, node_vector):
@@ -110,16 +134,15 @@ def transition_rate(node_matrix, node_vector):
 
     vector_n = node_vector.shape[0]
 
-    mean_influence_vector = node_matrix.dot(node_vector)
-    node_divide = node_matrix.sum(axis=1)
+    # giving directed weighted graph by transpose matrix
+    mean_influence_vector = node_matrix.T.dot(node_vector)
+    node_divide = node_matrix.sum(axis=0)
 
+    # convert the vector into float type to calculate probability
     mean_influence_vector = mean_influence_vector.astype(np.float)
 
     for i in range(vector_n):
-        a = mean_influence_vector[i].astype(float)*1
-        b =  node_divide[i]
-        c = a / b
-        mean_influence_vector[i] = c
+        mean_influence_vector[i] = mean_influence_vector[i] / node_divide[i]
 
     return mean_influence_vector
 
@@ -133,7 +156,6 @@ def change_node_value(node_vector, forward_transition_vector, backward_transitio
 
     :return: n by 1 numpy array
     """
-
         
     for i in range(node_vector.shape[0]):
         if node_vector[i] == 0:
@@ -144,7 +166,3 @@ def change_node_value(node_vector, forward_transition_vector, backward_transitio
 
     return node_vector
 
-
-def pop_rate():
-
-    return 
