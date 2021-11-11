@@ -52,7 +52,7 @@ def create_node_name_vector(n, rep_type):
     raise ValueError("argument rep_type is neither number nor char")
 
 
-def create_node_value_vector(n, gen_type="uniform"):
+def create_node_value_vector(n, gen_type="uniform", bin_p=False):
     """
     create a numpy array of binary values of nodes \n
     0 for not believe, 1 for believe
@@ -67,11 +67,25 @@ def create_node_value_vector(n, gen_type="uniform"):
     if (n < 0) or not (isinstance(n, int)):
         raise ValueError("argument n is neither positive nor integer")
 
-    # generate n size numpy array with all 0
-    node_value_vector = np.random.randint(2,size=n)
-        
-    return node_value_vector
+    if gen_type == "uniform":
+        # generate n size numpy array with all 0
+        node_value_vector = np.random.randint(2,size=n)
 
+        return node_value_vector
+
+    elif gen_type == "binomial":
+        
+        if not bin_p:
+            raise ValueError("binomial probility not given")
+        
+        else:
+            # create node vector, E[1(all j in row)] = n * bin_p
+            node_value_vector = np.random.binomial(1,bin_p,(n,1))
+
+            return node_value_vector
+    
+    else:
+        raise ValueError("Wrong generation type")
 
 def create_binary_matrix(n, gen_type="uniform", bin_p=False):
     """
@@ -109,9 +123,8 @@ def create_binary_matrix(n, gen_type="uniform", bin_p=False):
             raise ValueError("binomial probility not given")
         
         else:
-            for i in range(n):
-                # create row of node matrix, E[1(all j in row)] = n * bin_p
-                node_matrix = np.random.binomial(1,bin_p,(n,n))
+            # create row of node matrix, E[1(all j in row)] = n * bin_p
+            node_matrix = np.random.binomial(1,bin_p,(n,n))
             
             np.fill_diagonal(node_matrix, 1)
 

@@ -10,15 +10,20 @@ import matplotlib.pyplot as plt
 def main():
 
     n = 500
+    relation_size_mean = 100 # n * p
+    value_size_mean = 50
+    bin_pro_matrix = relation_size_mean / (n - 1) # p = mean / n
+    bin_pro_vector = value_size_mean / (n)
+
     pop_rate = []
     run_times = []
 
 
-    node_value_vector = create_node_value_vector(n)
-    print(node_value_vector)
+    node_value_vector = create_node_value_vector(n,"binomial",bin_pro_vector)
+    #print(np.mean(node_value_vector))
 
     #node_binary_matrix = create_binary_matrix(n)
-    node_binary_matrix = create_binary_matrix(n,"binomial",0.1)
+    node_binary_matrix = create_binary_matrix(n,"binomial",bin_pro_matrix)
 
     print(node_binary_matrix)
     #print(node_binary_matrix[1])
@@ -27,7 +32,7 @@ def main():
     run_times.append(0)
 
 
-    for i in range(500):
+    for i in range(1500):
 
         print("----------run ",i," ------------------")
 
@@ -41,7 +46,7 @@ def main():
         #print(reverse_transition_rate_vector)
 
         node_value_vector = change_node_value(node_value_vector,transition_rate_vector,reverse_transition_rate_vector)
-        print(node_value_vector)
+        #print(node_value_vector)
 
 
         pop_rate.append(np.mean(node_value_vector))
