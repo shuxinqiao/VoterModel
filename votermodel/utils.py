@@ -67,11 +67,13 @@ def create_node_value_vector(n, gen_type="uniform", bin_p=False):
     if (n < 0) or not (isinstance(n, int)):
         raise ValueError("argument n is neither positive nor integer")
 
+
     if gen_type == "uniform":
         # generate n size numpy array with all 0
         node_value_vector = np.random.randint(2,size=n)
 
         return node_value_vector
+
 
     elif gen_type == "binomial":
         
@@ -86,6 +88,7 @@ def create_node_value_vector(n, gen_type="uniform", bin_p=False):
     
     else:
         raise ValueError("Wrong generation type")
+
 
 def create_binary_matrix(n, gen_type="uniform", bin_p=False):
     """

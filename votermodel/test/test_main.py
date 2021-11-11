@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 def main():
 
     n = 500
-    relation_size_mean = 100 # n * p
+    relation_size_mean = 50 # n * p
     value_size_mean = 50
     bin_pro_matrix = relation_size_mean / (n - 1) # p = mean / n
     bin_pro_vector = value_size_mean / (n)
@@ -32,7 +32,7 @@ def main():
     run_times.append(0)
 
 
-    for i in range(1500):
+    for i in range(500):
 
         print("----------run ",i," ------------------")
 
@@ -52,10 +52,15 @@ def main():
         pop_rate.append(np.mean(node_value_vector))
         run_times.append(i+1)
         
+        #plt.plot(run_times,pop_rate,"red")
+        
+        #plt.pause(0.05)
+    
+    plot_line = plt.figure(1)
+    plt.stem(run_times,pop_rate,"blue")
 
-        plt.plot(run_times,pop_rate,"red")
-
-        plt.pause(0.05)
+    plot_hist = plt.figure(2)
+    plt.hist(pop_rate, color="blue")
 
     plt.show()
 
