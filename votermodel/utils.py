@@ -6,7 +6,13 @@ from itertools import product
 
 # asking user setting parameters (termial, no external GUI)
 def user_prompt(n,loop_time,relation_size_mean,value_size_mean,upper_limit):
+    """
+    Ask user to set parameters, all parameters have default value.
 
+    :param n: size of population, integer from 0 to upper_limit \n
+    :param loop_time: loop time for 
+    :return: numpy.array() object
+    """
     setting_progress = False
 
     while not setting_progress:
@@ -91,13 +97,13 @@ def create_node_name_vector(n, rep_type):
     raise ValueError("argument rep_type is neither number nor char")
 
 
-def create_node_value_vector(n, gen_type="uniform", bin_p=False):
+def create_node_value_vector(n, gen_type="binomial", bin_p=False):
     """
     create a numpy array of binary values of nodes \n
     0 for not believe, 1 for believe
 
     :param n: size of array, positive integer \n
-    :param rep_type: (default = "uniform") the way assigning binary values
+    :param rep_type: (default = "binomial") the way assigning binary values
 
     :return: numpy.array() object
     """
@@ -128,7 +134,7 @@ def create_binary_matrix(n, gen_type="binomial", bin_p=False):
     by reshaping the node_value array (depends on function: create_node_value_vector())
 
     :param n: n**2 is the size of matrix, positive integer \n
-    :param gen_type: (default = "uniform") the way of assigning binary values
+    :param gen_type: (default = "binomial") the way of assigning binary values
 
     :return: numpy.matrix() object
     """

@@ -15,6 +15,7 @@ def main():
     loop_time = False
     relation_size_mean = False # n * p
     value_size_mean = False
+    self_deter_range = False
     upper_limit = 10000
 
     (n,loop_time,relation_size_mean,value_size_mean,upper_limit) = user_prompt(n,loop_time,relation_size_mean,value_size_mean,upper_limit)
@@ -43,7 +44,7 @@ def main():
 
     for i in range(loop_time):
 
-        print("----------  run ",i," ----------")
+        print("----------  run ",i+1," ----------")
 
         transition_rate_vector = transition_rate(node_binary_matrix, node_value_vector)
         #print(transition_rate_vector)
