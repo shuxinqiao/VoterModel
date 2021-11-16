@@ -4,6 +4,45 @@ from string import ascii_uppercase
 from itertools import product
 
 
+# asking user setting parameters (termial, no external GUI)
+def user_prompt(n,loop_time,relation_size_mean,value_size_mean,upper_limit):
+
+    setting_progress = False
+
+    while not setting_progress:
+       
+        print("-----setting parameters-----\n")
+        print("Please enter correct format. Press enter key to submit.\n")
+
+        try:
+            n = int(input("Population size (integer only from (0,{}] (default:500)): ".format(upper_limit)) or "500")
+            if n not in range(0,upper_limit+1):
+                raise ValueError("\n!!! input is out of range. !!!\n") 
+            
+            loop_time = int(input("Loop time (integer only from (0,{}] (default:100)): ".format(upper_limit)) or "100")
+            if loop_time not in range(0,upper_limit+1):
+                raise ValueError("\n!!! input is out of range. !!!\n") 
+            
+            relation_size_mean = int(input("Expected relation size (integer only from (0,{}] (default:n/2)): ".format(n)) or n//2)
+            if relation_size_mean not in range(0,n+1):
+                raise ValueError("\n!!! input is out of range. !!!\n") 
+            
+            value_size_mean = int(input("Expected believers size (integer only from (0,{}] (default:n/2)): ".format(n)) or n//2)
+            if value_size_mean not in range(0,n+1):
+                raise ValueError("\n!!! input is out of range. !!!\n") 
+            
+            if input("Run the simulation now? type (y/n) (default:y): ") or "y" == "y":
+                setting_progress = True
+            else:
+                exit()
+
+        except ValueError:
+            print("\n!!! input wrong, please try again. !!!\n")
+            input("press enter to try again\n")
+
+    return (n,loop_time,relation_size_mean,value_size_mean,upper_limit)
+
+
 def create_node_name_vector(n, rep_type):
 
     """
@@ -67,15 +106,8 @@ def create_node_value_vector(n, gen_type="uniform", bin_p=False):
     if (n < 0) or not (isinstance(n, int)):
         raise ValueError("argument n is neither positive nor integer")
 
-
-    if gen_type == "uniform":
-        # generate n size numpy array with all 0
-        node_value_vector = np.random.randint(2,size=n)
-
-        return node_value_vector
-
-
-    elif gen_type == "binomial":
+    
+    if gen_type == "binomial":
         
         if not bin_p:
             raise ValueError("binomial probility not given")
@@ -90,7 +122,7 @@ def create_node_value_vector(n, gen_type="uniform", bin_p=False):
         raise ValueError("Wrong generation type")
 
 
-def create_binary_matrix(n, gen_type="uniform", bin_p=False):
+def create_binary_matrix(n, gen_type="binomial", bin_p=False):
     """
     create a numpy symmetric matrix of binary value of nodes' relationship \n
     by reshaping the node_value array (depends on function: create_node_value_vector())
@@ -105,22 +137,9 @@ def create_binary_matrix(n, gen_type="uniform", bin_p=False):
     if (n < 0) or not (isinstance(n, int)):
         raise ValueError("argument n is neither positive nor integer")
 
-    # unifrom generation method
-    if gen_type == "uniform":
-        node_array = create_node_value_vector(n**2, gen_type)
-        reshaped_node_matrix = node_array.reshape(n, n)
-
-        # node_matrix may have 1 in its diagonals so fill them with ones
-        np.fill_diagonal(reshaped_node_matrix, 1)
-
-        # complete the graph with right relationships
-        node_matrix = np.bitwise_or(reshaped_node_matrix,reshaped_node_matrix.transpose())
-
-        return node_matrix
-
 
     # binomial generation method given each row with binomial
-    elif gen_type == "binomial":
+    if gen_type == "binomial":
 
         if not bin_p:
             raise ValueError("binomial probility not given")
