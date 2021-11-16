@@ -16,9 +16,10 @@ def main():
     relation_size_mean = False # n * p
     value_size_mean = False
     self_deter_range = False
+    upper_range = False
     upper_limit = 10000
 
-    (n,loop_time,relation_size_mean,value_size_mean,upper_limit) = user_prompt(n,loop_time,relation_size_mean,value_size_mean,upper_limit)
+    (n,loop_time,relation_size_mean,value_size_mean,upper_range,upper_limit) = user_prompt(n,loop_time,relation_size_mean,value_size_mean,upper_range,upper_limit)
     
     # binomial param - p calculation
     bin_pro_matrix = relation_size_mean / (n - 1)    # p = mean / n
@@ -69,6 +70,7 @@ def main():
     plot_line = plt.figure(1)
     #plt.stem(run_times,pop_rate,"blue")
     plt.plot(run_times,pop_rate,"red")
+    plt.title("Believer rate in whole population")
 
     plot_hist = plt.figure(2)
     plt.hist(pop_rate, color="blue")

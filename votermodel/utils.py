@@ -5,7 +5,7 @@ from itertools import product
 
 
 # asking user setting parameters (termial, no external GUI)
-def user_prompt(n,loop_time,relation_size_mean,value_size_mean,upper_limit):
+def user_prompt(n,loop_time,relation_size_mean,value_size_mean,upper_range,upper_limit):
     """
     Ask user to set parameters, all parameters have default value.
 
@@ -21,21 +21,35 @@ def user_prompt(n,loop_time,relation_size_mean,value_size_mean,upper_limit):
         print("Please enter correct format. Press enter key to submit.\n")
 
         try:
+            # population size prompt
             n = int(input("Population size (integer only from (0,{}] (default:500)): ".format(upper_limit)) or "500")
             if n not in range(0,upper_limit+1):
                 raise ValueError("\n!!! input is out of range. !!!\n") 
             
+            # loop time prompt
             loop_time = int(input("Loop time (integer only from (0,{}] (default:100)): ".format(upper_limit)) or "100")
             if loop_time not in range(0,upper_limit+1):
                 raise ValueError("\n!!! input is out of range. !!!\n") 
             
+            # expected relation size prompt
             relation_size_mean = int(input("Expected relation size (integer only from (0,{}] (default:n/2)): ".format(n)) or n//2)
             if relation_size_mean not in range(0,n+1):
                 raise ValueError("\n!!! input is out of range. !!!\n") 
             
+            # expected believer size prompt
             value_size_mean = int(input("Expected believers size (integer only from (0,{}] (default:n/2)): ".format(n)) or n//2)
             if value_size_mean not in range(0,n+1):
                 raise ValueError("\n!!! input is out of range. !!!\n") 
+
+            # expected self confidence prompt
+            diagonal_mean = int(input("Expected self-confidence value (integer only from (0,{}] (default:1)): ".format(upper_limit)) or 1)
+            if diagonal_mean not in range(0,upper_limit+1):
+                raise ValueError("\n!!! input is out of range. !!!\n") 
+            
+            # model prompt 
+            if input("Expected believers size (integer only from (0,{}] (default:n/2)): ".format(upper_limit)) or "y"=="y":
+             #   raise ValueError("\n!!! input is out of range. !!!\n") 
+                pass
             
             if input("Run the simulation now? type (y/n) (default:y): ") or "y" == "y":
                 setting_progress = True
@@ -46,7 +60,7 @@ def user_prompt(n,loop_time,relation_size_mean,value_size_mean,upper_limit):
             print("\n!!! input wrong, please try again. !!!\n")
             input("press enter to try again\n")
 
-    return (n,loop_time,relation_size_mean,value_size_mean,upper_limit)
+    return (n,loop_time,relation_size_mean,value_size_mean,upper_range,upper_limit)
 
 
 def create_node_name_vector(n, rep_type):
@@ -128,13 +142,14 @@ def create_node_value_vector(n, gen_type="binomial", bin_p=False):
         raise ValueError("Wrong generation type")
 
 
-def create_binary_matrix(n, gen_type="binomial", bin_p=False):
+def create_binary_matrix(n, gen_type="binomial", gen_param=False):
     """
     create a numpy symmetric matrix of binary value of nodes' relationship \n
     by reshaping the node_value array (depends on function: create_node_value_vector())
 
     :param n: n**2 is the size of matrix, positive integer \n
     :param gen_type: (default = "binomial") the way of assigning binary values
+    :param gen_param: value for binomial;  range for uniform
 
     :return: numpy.matrix() object
     """
@@ -147,14 +162,29 @@ def create_binary_matrix(n, gen_type="binomial", bin_p=False):
     # binomial generation method given each row with binomial
     if gen_type == "binomial":
 
-        if not bin_p:
+        if not gen_param:
             raise ValueError("binomial probility not given")
         
         else:
             # create row of node matrix, E[1(all j in row)] = n * bin_p
-            node_matrix = np.random.binomial(1,bin_p,(n,n))
+            node_matrix = np.random.binomial(1,gen_param,(n,n))
             
             np.fill_diagonal(node_matrix, 1)
+
+            return node_matrix
+
+    # uniform continuous generation method given each row with RV from range
+    elif gent_type == "uniform":
+
+        if not gen_param:
+            raise ValueError("uniform range not given")
+        
+        else:
+
+            node_matrix = np.random.uniform(high=gen_param,size=n*n)
+            node_matrix.reshape((n,n))
+
+            np.fill_diagonal(node_matrix,1)
 
             return node_matrix
     
