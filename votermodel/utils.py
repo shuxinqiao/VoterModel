@@ -2,16 +2,25 @@ from matplotlib.pyplot import axis
 import numpy as np
 from string import ascii_uppercase
 from itertools import product
+from math import ceil
+
+from numpy.core.numeric import normalize_axis_tuple
 
 
 # asking user setting parameters (termial, no external GUI)
-def user_prompt(n,loop_time,relation_size_mean,value_size_mean,upper_range,upper_limit):
+def user_prompt(n,loop_time,relation_size_mean,value_size_mean,self_choice,diagonal_mean,model_choice,upper_range,upper_limit):
     """
     Ask user to set parameters, all parameters have default value.
 
     :param n: size of population, integer from 0 to upper_limit \n
-    :param loop_time: loop time for 
-    :return: numpy.array() object
+    :param loop_time: loop time for simulation \n
+    :param relation_size_mean: relation expected links for one \n
+    :param value_size_mean: number of believers for initial condition \n
+    :param diagonal_mean: expected value for diagonal_ \n 
+    :param upper_range: upper limit for uniform RV range \n
+    :param upper_limit: general numerical limit for possible runs \n
+
+    :return: all parameters in input order
     """
     setting_progress = False
 
@@ -21,46 +30,90 @@ def user_prompt(n,loop_time,relation_size_mean,value_size_mean,upper_range,upper
         print("Please enter correct format. Press enter key to submit.\n")
 
         try:
+            
             # population size prompt
-            n = int(input("Population size (integer only from (0,{}] (default:500)): ".format(upper_limit)) or "500")
+            n = int(input("1.Population size (integer only from (0,{}] (default:500)): ".format(upper_limit)) or "500")
             if n not in range(0,upper_limit+1):
-                raise ValueError("\n!!! input is out of range. !!!\n") 
+                raise ValueError 
             
+
             # loop time prompt
-            loop_time = int(input("Loop time (integer only from (0,{}] (default:100)): ".format(upper_limit)) or "100")
+            loop_time = int(input("2.Loop time (integer only from (0,{}] (default:100)): ".format(upper_limit)) or "100")
             if loop_time not in range(0,upper_limit+1):
-                raise ValueError("\n!!! input is out of range. !!!\n") 
+                raise ValueError 
             
+
             # expected relation size prompt
-            relation_size_mean = int(input("Expected relation size (integer only from (0,{}] (default:n/2)): ".format(n)) or n//2)
+            relation_size_mean = int(input("3.Expected relation size (integer only from (0,{}] (default:n/2)): ".format(n)) or n//2)
             if relation_size_mean not in range(0,n+1):
-                raise ValueError("\n!!! input is out of range. !!!\n") 
+                raise ValueError 
             
+
             # expected believer size prompt
-            value_size_mean = int(input("Expected believers size (integer only from (0,{}] (default:n/2)): ".format(n)) or n//2)
+            value_size_mean = int(input("4.Expected believers size (integer only from (0,{}] (default:n/2)): ".format(n)) or n//2)
             if value_size_mean not in range(0,n+1):
-                raise ValueError("\n!!! input is out of range. !!!\n") 
+                raise ValueError 
+
+
+            # self confidence method prompt
+            self_choice = input("5.Exact value for self confidence or Expected value (uniformly)? type (e/u) (default:e): ")
 
             # expected self confidence prompt
-            diagonal_mean = int(input("Expected self-confidence value (integer only from (0,{}] (default:1)): ".format(upper_limit)) or 1)
-            if diagonal_mean not in range(0,upper_limit+1):
-                raise ValueError("\n!!! input is out of range. !!!\n") 
+            if self_choice == "e" or self_choice == "u":
+                diagonal_mean = float(input("  -> 5.1.Expected self-confidence value (float from (0,{}] (default:1)): ".format(upper_limit)) or "1")
+                if ceil(diagonal_mean) not in range(0,upper_limit+1):
+                    raise ValueError
+
+            elif self_choice == "":
+                self_choice = "e"
+                diagonal_mean = 1
             
-            # model prompt 
-            if input("Expected believers size (integer only from (0,{}] (default:n/2)): ".format(upper_limit)) or "y"=="y":
-             #   raise ValueError("\n!!! input is out of range. !!!\n") 
-                pass
-            
-            if input("Run the simulation now? type (y/n) (default:y): ") or "y" == "y":
-                setting_progress = True
             else:
+                raise ValueError
+            
+
+            # model prompt 
+            model_choice = input("6.Binary relation (1/0) or Float value relation (uniformly)? type (b/f) (default:b): ")
+            if model_choice == "b":
+                pass
+
+            # float model requires expected value for uniform distribution
+            elif model_choice == "f":
+            
+                upper_range = float(input("  -> 6.1.Expected relation strength value (float from (0,{}] (default:self-confidence({}))): ".format(upper_limit,diagonal_mean)) or "1")
+                if ceil(upper_range) not in range(0,upper_limit+1):
+                    raise ValueError 
+
+                upper_range = upper_range*2
+
+            elif model_choice == "":
+                model_choice = "b"
+            
+            else:
+                raise ValueError
+
+                
+            # Final running prompt
+            quit_sign = input("Run the simulation now? type (y/n) (default:y): ")
+            if quit_sign == "y":
+                setting_progress = True
+            
+            elif quit_sign == "n":
                 exit()
+            
+            elif quit_sign:
+                raise ValueError
+
+            else:
+                setting_progress = True
+
 
         except ValueError:
             print("\n!!! input wrong, please try again. !!!\n")
             input("press enter to try again\n")
 
-    return (n,loop_time,relation_size_mean,value_size_mean,upper_range,upper_limit)
+
+    return (n,loop_time,relation_size_mean,value_size_mean,self_choice,diagonal_mean,model_choice,upper_range)
 
 
 def create_node_name_vector(n, rep_type):
@@ -142,13 +195,13 @@ def create_node_value_vector(n, gen_type="binomial", bin_p=False):
         raise ValueError("Wrong generation type")
 
 
-def create_binary_matrix(n, gen_type="binomial", gen_param=False):
+def create_matrix(n, gen_type="binomial", gen_param=False):
     """
     create a numpy symmetric matrix of binary value of nodes' relationship \n
     by reshaping the node_value array (depends on function: create_node_value_vector())
 
     :param n: n**2 is the size of matrix, positive integer \n
-    :param gen_type: (default = "binomial") the way of assigning binary values
+    :param gen_type: (default = "binomial") the way of assigning values
     :param gen_param: value for binomial;  range for uniform
 
     :return: numpy.matrix() object
@@ -168,23 +221,19 @@ def create_binary_matrix(n, gen_type="binomial", gen_param=False):
         else:
             # create row of node matrix, E[1(all j in row)] = n * bin_p
             node_matrix = np.random.binomial(1,gen_param,(n,n))
-            
-            np.fill_diagonal(node_matrix, 1)
 
             return node_matrix
 
     # uniform continuous generation method given each row with RV from range
-    elif gent_type == "uniform":
+    elif gen_type == "uniform":
 
         if not gen_param:
             raise ValueError("uniform range not given")
         
         else:
 
-            node_matrix = np.random.uniform(high=gen_param,size=n*n)
-            node_matrix.reshape((n,n))
-
-            np.fill_diagonal(node_matrix,1)
+            node_matrix = np.random.uniform(high=float(gen_param),size=n**2)
+            node_matrix = np.reshape(node_matrix,(n,n))
 
             return node_matrix
     
