@@ -7,7 +7,6 @@ from utils import *
 import matplotlib.pyplot as plt
 
 
-
 def main():
 
     # parameters
@@ -77,6 +76,10 @@ def main():
     run_times.append(0)
 
 
+    # plot preparation
+    fig, ((ax1, ax2)) = plt.subplots(2)
+  
+    # main loop
     for i in range(loop_time):
 
         print("----------  run ",i+1," ----------")
@@ -97,23 +100,25 @@ def main():
         pop_rate.append(np.mean(node_value_vector))
         run_times.append(i+1)
         
+
+        ax1.cla()
+        ax1.set_title("Believer Rate in Whole Population")
+        ax1.set(xlabel="Run time (t)",ylabel="Proportion of Believers (%)")
+        #plot_line = plt.figure(1)
+        #plt.stem(run_times,pop_rate,"blue")
+        ax1.plot(run_times,pop_rate,"cornflowerblue")
+
+        ax2.cla()
+        ax2.set_title("Believer Rate States Account")
+        ax2.set(xlabel="Proportion of Believers (%)",ylabel="Occur time")
+        #plot_hist = plt.figure(2)
+        ax2.hist(pop_rate, color="springgreen")
         
-        
-        #plt.pause(0.05)
+        plt.tight_layout()
+
+        plt.pause(0.02)
     
-    plot_line = plt.figure(1)
-    #plt.stem(run_times,pop_rate,"blue")
-    plt.plot(run_times,pop_rate,"cornflowerblue")
-    plt.title("Believer Rate in Whole Population")
-    plt.xlabel("Run time (t)")
-    plt.ylabel("Proportion of Believers (%)")
-
-    plot_hist = plt.figure(2)
-    plt.hist(pop_rate, color="springgreen")
-    plt.title("Believer Rate States Account")
-    plt.xlabel("Proportion of Believers (%)")
-    plt.ylabel("Occur time")
-
+    
     plt.show()
 
 
