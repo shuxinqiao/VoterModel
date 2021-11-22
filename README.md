@@ -20,6 +20,11 @@ Voter model based on the property of Martingale Problem and Markov Process.
 ## Usage
 Run main.py and operate with GUI.
 ```sh
+# Mac & Linux
 # run main.py
 $ python3 main.py
+
+# Windows
+# run main.py
+$ python main.py
 ```
