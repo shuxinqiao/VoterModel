@@ -18,13 +18,11 @@ Voter model based on the property of Martingale Problem and Markov Process.
 - [tkinter](https://docs.python.org/3/library/tkinter.html) - GUI
 
 ## Usage
-Run main.py and operate with GUI.
+Run main.py.
 ```sh
 # Mac & Linux
-# run main.py
 $ python3 main.py
 
 # Windows
-# run main.py
 $ python main.py
 ```
