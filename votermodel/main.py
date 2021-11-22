@@ -1,4 +1,8 @@
 import sys, os
+
+# add path to parent directory
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
+
 from utils import *
 import matplotlib.pyplot as plt
 
@@ -81,16 +85,12 @@ def main():
         print("----------  run ",i+1," ----------")
 
         transition_rate_vector = transition_rate(node_matrix, node_value_vector)
-        #print(transition_rate_vector)
 
         reverse_node_value_vector = 1 - node_value_vector
-        #print(reverse_node_value_vector)
 
         reverse_transition_rate_vector = transition_rate(node_matrix, reverse_node_value_vector)
-        #print(reverse_transition_rate_vector)
 
         node_value_vector = change_node_value(node_value_vector,transition_rate_vector,reverse_transition_rate_vector)
-        #print(node_value_vector)
 
 
         pop_rate.append(np.mean(node_value_vector))
