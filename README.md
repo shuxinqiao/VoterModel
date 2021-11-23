@@ -13,8 +13,8 @@ Whole term team project of STAT 471 - Probability I.
 Voter model based on the property of Martingale Problem and Markov Process.
 
 ## Dependency
-- [numpy](https://numpy.org/) - Calculation and representation
-- [matplotlib](https://matplotlib.org/) - Graph drawing
+- [numpy](https://numpy.org/) - Version: 1.17.2 - Calculation and representation
+- [matplotlib](https://matplotlib.org/) - Version: 3.1.1 - Graph drawing
 - [tkinter](https://docs.python.org/3/library/tkinter.html) - GUI
 
 ## Usage
