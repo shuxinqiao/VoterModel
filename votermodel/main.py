@@ -114,6 +114,8 @@ def main():
     
     plt.show()
 
+    quit_prompt = input("Press enter to quit")
+
     return 0
 
 

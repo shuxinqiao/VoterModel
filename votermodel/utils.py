@@ -276,13 +276,17 @@ def change_node_value(node_vector, forward_transition_vector, backward_transitio
 
     :return: n by 1 numpy array
     """
-        
+    
+    #random_choose = np.random.uniform(size=node_vector.shape[0])
+
     for i in range(node_vector.shape[0]):
         if node_vector[i] == 0:
             node_vector[i] = np.random.binomial(1,forward_transition_vector[i])
+            #node_vector[i] = (random_choose[i] < forward_transition_vector[i]) * 1
 
         elif node_vector[i] == 1:
             node_vector[i] = 1 - np.random.binomial(1,backward_transition_vector[i])
+            #node_vector[i] = 1 - (random_choose[i] < backward_transition_vector[i]) * 1
 
     return node_vector
 
