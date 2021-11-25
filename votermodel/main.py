@@ -112,9 +112,15 @@ def main():
         plt.pause(0.02)
     
     
-    plt.show()
+    #plt.show()
 
-    quit_prompt = input("Press enter to quit")
+    quit_prompt = input("Enter q and press enter to quit: ")
+
+    while quit_prompt != "q":
+        quit_prompt = input("Enter q and press enter to quit: ")
+        if quit_prompt != "q":
+            print("\n  input wrong, please try again. \n")
+        
 
     return 0
 
