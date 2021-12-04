@@ -72,7 +72,7 @@ def main():
 
 
 
-    pop_rate.append(np.mean(node_value_vector))
+    pop_rate.append(np.mean(node_value_vector)*100)
     run_times.append(0)
 
 
@@ -93,7 +93,7 @@ def main():
         node_value_vector = change_node_value(node_value_vector,transition_rate_vector,reverse_transition_rate_vector)
 
 
-        pop_rate.append(np.mean(node_value_vector))
+        pop_rate.append(np.mean(node_value_vector)*100)
         run_times.append(i+1)
         
 
