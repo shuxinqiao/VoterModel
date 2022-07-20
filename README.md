@@ -1,7 +1,7 @@
 # VoterModel
 Python project. Uses voter model to simulate rumor spread in a closed relation environment.
 
-[Full report.pdf](../STAT471GroupReport.pdf) is in repo .
+[Full report.pdf](/STAT471GroupReport.pdf) is in repo .
 
 
 ## Background
